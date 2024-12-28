@@ -8,6 +8,56 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+//FUNCTION CATEGORY
+// func TestGetCategoryByID
+func TestGetCategoryByID(t *testing.T) {
+	_id := "67619243c9f2a5f803110bde"
+	objectID, err := primitive.ObjectIDFromHex(_id)
+	if err != nil {
+		t.Fatalf("error converting id to ObjectID: %v", err)
+	}
+	category, err := module.GetOrderByID(objectID, module.MongoConn, "Category")
+	if err != nil {
+		t.Fatalf("error calling GetOrderByID: %v", err)
+	}
+	fmt.Println(category)
+}
+
+// func TestGetAllCategory
+func TestGetAllCategory(t *testing.T) {
+	data := module.GetAllCategory(module.MongoConn, "Category")
+	fmt.Println(data)
+}
+
+// func TestInsertCategory
+func TestInsertCategory(t *testing.T) {
+	name := "Salad"
+	insertedID, err := module.InsertCategory(module.MongoConn, "Category", name)
+	if err != nil {
+		t.Errorf("Error inserting data: %v", err)
+	}
+	fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
+}
+
+func TestDeleteCategoryID(t *testing.T) {
+	id := "67619243c9f2a5f803110bde"
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		t.Fatalf("error converting id to ObjectID: %v", err)
+	}
+
+	err = module.DeleteCategoryByID(objectID, module.MongoConn, "Category")
+	if err != nil {
+		t.Fatalf("error calling DeleteCategoryByID: %v", err)
+	}
+
+	_, err = module.GetCategoryByID(objectID, module.MongoConn, "Category")
+	if err == nil {
+		t.Fatalf("expected data to be deleted, but it still exists")
+	}
+}
+
+
 //FUNCTION MENU ITEM
 func TestGetMenuItemByID(t *testing.T) {
 	_id := "67619243c9f2a5f803110bde"
@@ -52,6 +102,78 @@ func TestDeleteMenuItemByID(t *testing.T) {
 	}
 
 	_, err = module.GetMenuItemByID(objectID, module.MongoConn, "DataPasien")
+	if err == nil {
+		t.Fatalf("expected data to be deleted, but it still exists")
+	}
+}
+
+//FUNCTION ORDER
+// func TestGetOrderByID
+func TestGetOrderByID(t *testing.T) {
+	_id := "67619243c9f2a5f803110bde"
+	objectID, err := primitive.ObjectIDFromHex(_id)
+	if err != nil {
+		t.Fatalf("error converting id to ObjectID: %v", err)
+	}
+	order, err := module.GetOrderByID(objectID, module.MongoConn, "Order")
+	if err != nil {
+		t.Fatalf("error calling GetOrderByID: %v", err)
+	}
+	fmt.Println(order)
+}
+
+// func TestGetAllOrder
+func TestGetAllOrder(t *testing.T) {
+	data := module.GetAllOrder(module.MongoConn, "Order")
+	fmt.Println(data)
+}
+
+// func TestInsertOrder
+func TestInsertOrder(t *testing.T) {
+	orderItems := []model.OrderItem{
+		{
+			MenuItemID: primitive.NewObjectID(),
+			Quantity:   1,
+			Price:      45.000,
+		},
+	}
+	orderDate := "2021-07-01"
+	totalAmount := 45.000
+	status := "Pending"
+	deliveryDate := "2021-07-02"
+	deliveryAddress := "Jalan Sariasih No. 12"
+
+	// Ensure MongoConn is not nil
+	if module.MongoConn == nil {
+		t.Fatal("MongoConn is not initialized")
+	}
+
+	insertedID, err := module.InsertOrder(module.MongoConn, "Order", orderItems, orderDate, totalAmount, status, deliveryDate, deliveryAddress)
+	if err != nil {
+		t.Fatalf("Error inserting data: %v", err)
+	}
+
+	// Check if insertedID is valid
+	if insertedID.IsZero() {
+		t.Fatal("Inserted ID is zero, insertion may have failed")
+	}
+
+	fmt.Printf("Data berhasil disimpan dengan id %s\n", insertedID.Hex())
+}
+
+func TestDeleteCategoryByID(t *testing.T) {
+	id := "668e2b1540bdb1d47710a316"
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		t.Fatalf("error converting id to ObjectID: %v", err)
+	}
+
+	err = module.DeleteCustomerByID(objectID, module.MongoConn, "Category")
+	if err != nil {
+		t.Fatalf("error calling DeleteCategoryByID: %v", err)
+	}
+
+	_, err = module.GetCategoryByID(objectID, module.MongoConn, "Category")
 	if err == nil {
 		t.Fatalf("expected data to be deleted, but it still exists")
 	}
