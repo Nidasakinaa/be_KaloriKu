@@ -331,11 +331,10 @@ func GetAllCustomer(db *mongo.Database, col string) (data []model.Customer) {
 	return
 }
 
-func InsertCustomer(db *mongo.Database, col string, name string, phone string, address string) (insertedID primitive.ObjectID, err error) {
+func InsertCustomer(db *mongo.Database, col string, name string, phone string) (insertedID primitive.ObjectID, err error) {
 	customer := bson.M{
 		"name":    name,
 		"phone":   phone,
-		"address": address,
 	}
 	result, err := db.Collection(col).InsertOne(context.Background(), customer)
 	if err != nil {
@@ -346,13 +345,12 @@ func InsertCustomer(db *mongo.Database, col string, name string, phone string, a
 	return insertedID, nil
 }
 
-func UpdateCustomer(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string, address string) (err error) {
+func UpdateCustomer(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string) (err error) {
 	filter := bson.M{"_id": _id}
 	update := bson.M{
 		"$set": bson.M{
 			"name":    name,
 			"phone":   phone,
-			"address": address,
 		},
 	}
 	result, err := db.Collection(col).UpdateOne(ctx, filter, update)

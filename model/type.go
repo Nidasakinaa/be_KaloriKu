@@ -35,7 +35,6 @@ type Customer struct {
 	ID        	 primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	Name      	 string             `bson:"name,omitempty" json:"name,omitempty"`
 	Phone     	 string             `bson:"phone,omitempty" json:"phone,omitempty"`
-	Address   	 string             `bson:"address,omitempty" json:"address,omitempty"`
 	OrderHistory []Order         	`bson:"order_history,omitempty" json:"order_history,omitempty"`
 }
 
