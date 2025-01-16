@@ -10,7 +10,7 @@ import (
 
 //FUNCTION MENU ITEM
 func TestGetMenuItemByID(t *testing.T) {
-	_id := "67619243c9f2a5f803110bde"
+	_id := "6788c9bad9da4ca29ade931b"
 	objectID, err := primitive.ObjectIDFromHex(_id)
 	if err != nil {
 		t.Fatalf("error converting id to ObjectID: %v", err)
@@ -30,9 +30,9 @@ func TestGetAllMenu(t *testing.T) {
 func TestInsertMenuItem(t *testing.T) {
 	name := "Vegetable Salad with Salted Egg"
 	description := "Fresh vegetables with salted egg"
-	kalori := 200.0
 	category := "Salad"
-	insertedID, err := module.InsertMenuItem(module.MongoConn, "Menu", name, description, kalori, category, "additionalArgument")
+	image := "1234"
+	insertedID, err := module.InsertMenuItem(module.MongoConn, "Menu", name, description, category, image)
 	if err != nil {
 		t.Errorf("Error inserting data: %v", err)
 	}
@@ -40,7 +40,7 @@ func TestInsertMenuItem(t *testing.T) {
 }
 
 func TestDeleteMenuItemByID(t *testing.T) {
-	id := "67855c2d5c56272c7a24e848"
+	id := "6788c9bad9da4ca29ade931b"
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		t.Fatalf("error converting id to ObjectID: %v", err)
