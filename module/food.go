@@ -43,7 +43,7 @@ func StaticAdminLogin(db *mongo.Database, col string, username, password string)
 //GetMenuItemByID retrieves a menu item from the database by its ID
 func GetMenuItemByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.MenuItem, error) {
 	var menu model.MenuItem
-	collection := db.Collection("MenuItem")
+	collection := db.Collection("Menu")
 	filter := bson.M{"_id": _id}
 	err := collection.FindOne(context.TODO(), filter).Decode(&menu)
 	if err != nil {
@@ -71,14 +71,12 @@ func GetAllMenuItem(db *mongo.Database, col string) (data []model.MenuItem) {
 }
 
 // InsertMenuItem creates a new order in the database
-func InsertMenuItem(db *mongo.Database, col string, name string, description string, price float64, category string, image string, stock float64) (insertedID primitive.ObjectID, err error) {
+func InsertMenuItem(db *mongo.Database, col string, name string, description string, category string, image string) (insertedID primitive.ObjectID, err error) {
 	menu := bson.M{
 		"name":    		name,
 		"description":  description,
-		"price":        price,
 		"category":   	category,
 		"image":		image,
-		"stock":		stock,	
 	}
 	result, err := db.Collection(col).InsertOne(context.Background(), menu)
 	if err != nil {
@@ -96,10 +94,8 @@ func UpdateMenuItem(ctx context.Context, db *mongo.Database, col string, _id pri
 		"$set": bson.M{
 			"name":    		name,
 			"description":  description,
-			"price":      	price,
 			"category":   	category,
 			"image"	:		image,
-			"stock":		stock,
 		},
 	}
 	result, err := db.Collection(col).UpdateOne(ctx, filter, update)
@@ -118,178 +114,6 @@ func DeleteMenuItemByID(_id primitive.ObjectID, db *mongo.Database, col string) 
 	filter := bson.M{"_id": _id}
 
 	result, err := menu.DeleteOne(context.TODO(), filter)
-	if err != nil {
-		return fmt.Errorf("error deleting data for ID %s: %s", _id, err.Error())
-	}
-
-	if result.DeletedCount == 0 {
-		return fmt.Errorf("data with ID %s not found", _id)
-	}
-
-	return nil
-}
-
-//FUNCTION OrderItems
-// GetOrderItemByID retrieves an order item from the database by its ID
-func GetOrderItemByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.OrderItem, error) {
-	var orderItem model.OrderItem
-	collection := db.Collection("OrderItem")
-	filter := bson.M{"_id": _id}
-	err := collection.FindOne(context.TODO(), filter).Decode(&orderItem)
-	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			return orderItem, fmt.Errorf("GetOrderItemByID: order item dengan ID %s tidak ditemukan", _id.Hex())
-		}
-		return orderItem, fmt.Errorf("GetOrderItemByID: gagal mendapatkan order item: %w", err)
-	}
-	return orderItem, nil
-}
-
-//GetAllOrderItem retrieves all order items from the database
-func GetAllOrderItem(db *mongo.Database, col string) (data []model.OrderItem) {
-	orderItem := db.Collection(col)
-	filter := bson.M{}
-	cursor, err := orderItem.Find(context.TODO(), filter)
-	if err != nil {
-		fmt.Println("GetAllOrderItem :", err)
-	}
-	err = cursor.All(context.TODO(), &data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return
-}
-
-// InsertOrderItem creates a new order in the database
-func InsertOrderItem(db *mongo.Database, col string, quantity int, price float64) (insertedID primitive.ObjectID, err error) {
-	orderItem := bson.M{
-		"quantity":    quantity,
-		"price":       price,
-	}
-	result, err := db.Collection(col).InsertOne(context.Background(), orderItem)
-	if err != nil {
-		fmt.Printf("InsertOrderItem: %v\n", err)
-		return
-	}
-	insertedID = result.InsertedID.(primitive.ObjectID)
-	return insertedID, nil
-}
-
-//UpdateOrderItem updates an existing order item in the database
-func UpdateOrderItem(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, quantity int, price float64) (err error) {
-	filter := bson.M{"_id": _id}
-	update := bson.M{
-		"$set": bson.M{
-			"quantity":    quantity,
-			"price":       price,
-		},
-	}
-	result, err := db.Collection(col).UpdateOne(ctx, filter, update)
-	if err != nil {
-		return fmt.Errorf("UpdateOrderItem: gagal memperbarui OrderItem: %w", err)
-	}
-	if result.MatchedCount == 0 {
-		return errors.New("UpdateOrderItem: tidak ada data yang diubah dengan ID yang ditentukan")
-	}
-	return nil
-}
-
-// DeleteOrderItemByID deletes an order item from the database by its ID
-func DeleteOrderItemByID(_id primitive.ObjectID, db *mongo.Database, col string) error {
-	orderItem := db.Collection(col)
-	filter := bson.M{"_id": _id}
-
-	result, err := orderItem.DeleteOne(context.TODO(), filter)
-	if err != nil {
-		return fmt.Errorf("error deleting data for ID %s: %s", _id, err.Error())
-	}
-
-	if result.DeletedCount == 0 {
-		return fmt.Errorf("data with ID %s not found", _id)
-	}
-
-	return nil
-}
-
-//FUNCTION Order
-//GerOrderByID retrieves an order from the database by its ID
-func GetOrderByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.Order, error) {
-	var order model.Order
-	collection := db.Collection("Order")
-	filter := bson.M{"_id": _id}
-	err := collection.FindOne(context.TODO(), filter).Decode(&order)
-	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			return order, fmt.Errorf("GetOrderByID: order dengan ID %s tidak ditemukan", _id.Hex())
-		}
-		return order, fmt.Errorf("GetOrderByID: gagal mendapatkan order: %w", err)
-	}
-	return order, nil
-}
-
-//GetAllOrder retrieves all orders from the database
-func GetAllOrder(db *mongo.Database, col string) (data []model.Order) {
-	order := db.Collection(col)
-	filter := bson.M{}
-	cursor, err := order.Find(context.TODO(), filter)
-	if err != nil {
-		fmt.Println("GetAllOrder :", err)
-	}
-	err = cursor.All(context.TODO(), &data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return
-}
-
-// InsertOrder creates a new order in the database
-func InsertOrder(db *mongo.Database, col string, orderItems model.OrderItem, order_date string, total_amount float64, status string, delivery_date string, delivery_address string) (insertedID primitive.ObjectID, err error) {
-	order := bson.M{
-		"orderItem":     orderItems,
-		"orderDate":     order_date,
-		"totalAmount":   total_amount,
-		"status":   	 status,
-		"deliveryDate":  delivery_date,
-		"deliveryAddress":delivery_address,
-	}
-	result, err := db.Collection(col).InsertOne(context.Background(), order)
-	if err != nil {
-		fmt.Printf("InsertOrder: %v\n", err)
-		return
-	}
-	insertedID = result.InsertedID.(primitive.ObjectID)
-	return insertedID, nil
-}
-
-//UpdateOrder updates an existing order in the database
-func UpdateOrder(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, orderItems model.OrderItem, order_date string, total_amount float64, status string, delivery_date string, delivery_address string) (err error) {
-	filter := bson.M{"_id": _id}
-	update := bson.M{
-		"$set": bson.M{
-		"orderItem":     	orderItems,
-		"orderDate":     	order_date,
-		"totalAmount":   	total_amount,
-		"status":   	 	status,
-		"deliveryDate":  	delivery_date,
-		"deliveryAddress":	delivery_address,
-		},
-	}
-	result, err := db.Collection(col).UpdateOne(ctx, filter, update)
-	if err != nil {
-		return fmt.Errorf("UpdateOrder: gagal memperbarui order: %w", err)
-	}
-	if result.MatchedCount == 0 {
-		return errors.New("UpdateOrder: tidak ada data yang diubah dengan ID yang ditentukan")
-	}
-	return nil
-}
-
-// DeleteOrderByID deletes an order from the database by its ID
-func DeleteOrderByID(_id primitive.ObjectID, db *mongo.Database, col string) error {
-	order := db.Collection(col)
-	filter := bson.M{"_id": _id}
-
-	result, err := order.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		return fmt.Errorf("error deleting data for ID %s: %s", _id, err.Error())
 	}
@@ -456,5 +280,3 @@ func DeleteAdminByID(_id primitive.ObjectID, db *mongo.Database, col string) err
 
 	return nil
 }
-
-
