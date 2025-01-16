@@ -16,6 +16,8 @@ type Customer struct {
 	ID        	 primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	Name      	 string             `bson:"name,omitempty" json:"name,omitempty"`
 	Phone     	 string             `bson:"phone,omitempty" json:"phone,omitempty"`
+	Username string             `bson:"username,omitempty" json:"username,omitempty"`
+	Password string             `bson:"password,omitempty" json:"password,omitempty"`
 }
 
 type Admin struct {
