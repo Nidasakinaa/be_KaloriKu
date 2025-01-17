@@ -71,10 +71,12 @@ func GetAllMenuItem(db *mongo.Database, col string) (data []model.MenuItem) {
 }
 
 // InsertMenuItem creates a new order in the database
-func InsertMenuItem(db *mongo.Database, col string, name string, description string, category string, image string) (insertedID primitive.ObjectID, err error) {
+func InsertMenuItem(db *mongo.Database, col string, name string, ingredients string, description string, calories float64, category string, image string) (insertedID primitive.ObjectID, err error) {
 	menu := bson.M{
 		"name":    		name,
+		"ingredients":  ingredients,
 		"description":  description,
+		"calories":     calories,
 		"category":   	category,
 		"image":		image,
 	}
@@ -88,14 +90,16 @@ func InsertMenuItem(db *mongo.Database, col string, name string, description str
 }
 
 //UpdateMenuItem updates an existing menu item in the database
-func UpdateMenuItem(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, description string, price float64, category string, image string, stock float64) (err error) {
+func UpdateMenuItem(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, ingredients string, description string, calories float64, category string, image string) (err error) {
 	filter := bson.M{"_id": _id}
 	update := bson.M{
 		"$set": bson.M{
 			"name":    		name,
+			"ingredients":  ingredients,
 			"description":  description,
+			"calories":     calories,
 			"category":   	category,
-			"image"	:		image,
+			"image":		image,
 		},
 	}
 	result, err := db.Collection(col).UpdateOne(ctx, filter, update)

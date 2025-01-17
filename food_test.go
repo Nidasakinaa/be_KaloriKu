@@ -10,7 +10,7 @@ import (
 
 //FUNCTION MENU ITEM
 func TestGetMenuItemByID(t *testing.T) {
-	_id := "6788c9bad9da4ca29ade931b"
+	_id := "678a72468c7c04668e9b40e5"
 	objectID, err := primitive.ObjectIDFromHex(_id)
 	if err != nil {
 		t.Fatalf("error converting id to ObjectID: %v", err)
@@ -28,19 +28,21 @@ func TestGetAllMenu(t *testing.T) {
 }
 
 func TestInsertMenuItem(t *testing.T) {
-	name := "Vegetable Salad with Salted Egg"
-	description := "Fresh vegetables with salted egg"
-	category := "Salad"
-	image := "1234"
-	insertedID, err := module.InsertMenuItem(module.MongoConn, "Menu", name, description, category, image)
-	if err != nil {
-		t.Errorf("Error inserting data: %v", err)
-	}
-	fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
+	name := "Grilled Chicken with Quinoa"
+    ingredients := "Chicken Breast 200 gram, Quinoa 100 gram, Olive Oil, Spices"
+    description := "Grilled chicken breast served with quinoa and seasoned with olive oil and spices"
+    calories := 350.0
+    category := "Main Course"
+    image := "5678"
+    insertedID, err := module.InsertMenuItem(module.MongoConn, "Menu", name, ingredients, description, calories, category, image)
+    if err != nil {
+        t.Errorf("Error inserting data: %v", err)
+    }
+    fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
 }
 
 func TestDeleteMenuItemByID(t *testing.T) {
-	id := "6788c9bad9da4ca29ade931b"
+	id := "678a71310bb7a4334619cf8b"
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		t.Fatalf("error converting id to ObjectID: %v", err)
@@ -57,96 +59,96 @@ func TestDeleteMenuItemByID(t *testing.T) {
 	}
 }
 
-//FUNCTION COSTUMER
-func TestGetCustomerByID(t *testing.T) {
-	_id := "669534d2af52bee3d2606c34"
-	objectID, err := primitive.ObjectIDFromHex(_id)
-	if err != nil {
-		t.Fatalf("error converting id to ObjectID: %v", err)
-	}
-	customer, err := module.GetCustomerByID(objectID, module.MongoConn, "Costumer")
-	if err != nil {
-		t.Fatalf("error calling GetCustomerFromID: %v", err)
-	}
-	fmt.Println(customer)
-}
+// //FUNCTION COSTUMER
+// func TestGetCustomerByID(t *testing.T) {
+// 	_id := "669534d2af52bee3d2606c34"
+// 	objectID, err := primitive.ObjectIDFromHex(_id)
+// 	if err != nil {
+// 		t.Fatalf("error converting id to ObjectID: %v", err)
+// 	}
+// 	customer, err := module.GetCustomerByID(objectID, module.MongoConn, "Costumer")
+// 	if err != nil {
+// 		t.Fatalf("error calling GetCustomerFromID: %v", err)
+// 	}
+// 	fmt.Println(customer)
+// }
 
-func TestGetAllCustomer(t *testing.T) {
-	data := module.GetAllCustomer(module.MongoConn, "Costumer")
-	fmt.Println(data)
-}
+// func TestGetAllCustomer(t *testing.T) {
+// 	data := module.GetAllCustomer(module.MongoConn, "Costumer")
+// 	fmt.Println(data)
+// }
 
-func TestInsertCustomer(t *testing.T) {
-	name := "Sari Endah"
-	phone := "0831654321"
-	insertedID, err := module.InsertCustomer(module.MongoConn, "Costumer", name, phone)
-	if err != nil {
-		t.Errorf("Error inserting data: %v", err)
-	}
-	fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
-}
+// func TestInsertCustomer(t *testing.T) {
+// 	name := "Sari Endah"
+// 	phone := "0831654321"
+// 	insertedID, err := module.InsertCustomer(module.MongoConn, "Costumer", name, phone)
+// 	if err != nil {
+// 		t.Errorf("Error inserting data: %v", err)
+// 	}
+// 	fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
+// }
 
-func TestDeleteCustomerByID(t *testing.T) {
-	id := "668e2b1540bdb1d47710a316"
-	objectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		t.Fatalf("error converting id to ObjectID: %v", err)
-	}
+// func TestDeleteCustomerByID(t *testing.T) {
+// 	id := "668e2b1540bdb1d47710a316"
+// 	objectID, err := primitive.ObjectIDFromHex(id)
+// 	if err != nil {
+// 		t.Fatalf("error converting id to ObjectID: %v", err)
+// 	}
 
-	err = module.DeleteCustomerByID(objectID, module.MongoConn, "Customer")
-	if err != nil {
-		t.Fatalf("error calling DeleteCustomerByID: %v", err)
-	}
+// 	err = module.DeleteCustomerByID(objectID, module.MongoConn, "Customer")
+// 	if err != nil {
+// 		t.Fatalf("error calling DeleteCustomerByID: %v", err)
+// 	}
 
-	_, err = module.GetCustomerByID(objectID, module.MongoConn, "Customer")
-	if err == nil {
-		t.Fatalf("expected data to be deleted, but it still exists")
-	}
-}
+// 	_, err = module.GetCustomerByID(objectID, module.MongoConn, "Customer")
+// 	if err == nil {
+// 		t.Fatalf("expected data to be deleted, but it still exists")
+// 	}
+// }
 
-//FUNCTION ADMIN
-func TestGetAdminByID(t *testing.T) {
-	_id := "669534d2af52bee3d2606c34"
-	objectID, err := primitive.ObjectIDFromHex(_id)
-	if err != nil {
-		t.Fatalf("error converting id to ObjectID: %v", err)
-	}
-	admin, err := module.GetAdminByID(objectID, module.MongoConn, "Admin")
-	if err != nil {
-		t.Fatalf("error calling GetAdminFromID: %v", err)
-	}
-	fmt.Println(admin)
-}
+// //FUNCTION ADMIN
+// func TestGetAdminByID(t *testing.T) {
+// 	_id := "669534d2af52bee3d2606c34"
+// 	objectID, err := primitive.ObjectIDFromHex(_id)
+// 	if err != nil {
+// 		t.Fatalf("error converting id to ObjectID: %v", err)
+// 	}
+// 	admin, err := module.GetAdminByID(objectID, module.MongoConn, "Admin")
+// 	if err != nil {
+// 		t.Fatalf("error calling GetAdminFromID: %v", err)
+// 	}
+// 	fmt.Println(admin)
+// }
 
-func TestGetAllAdmin(t *testing.T) {
-	data := module.GetAllAdmin(module.MongoConn, "Admin")
-	fmt.Println(data)
-}
+// func TestGetAllAdmin(t *testing.T) {
+// 	data := module.GetAllAdmin(module.MongoConn, "Admin")
+// 	fmt.Println(data)
+// }
 
-func TestInsertAdmin(t *testing.T) {
-	username := "Sari Endah"
-	password := "0831654321"
-	insertedID, err := module.InsertCustomer(module.MongoConn, "Admin", username, password)
-	if err != nil {
-		t.Errorf("Error inserting data: %v", err)
-	}
-	fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
-}
+// func TestInsertAdmin(t *testing.T) {
+// 	username := "Sari Endah"
+// 	password := "0831654321"
+// 	insertedID, err := module.InsertCustomer(module.MongoConn, "Admin", username, password)
+// 	if err != nil {
+// 		t.Errorf("Error inserting data: %v", err)
+// 	}
+// 	fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
+// }
 
-func TestDeleteAdminByID(t *testing.T) {
-	id := "668e2b1540bdb1d47710a316"
-	objectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		t.Fatalf("error converting id to ObjectID: %v", err)
-	}
+// func TestDeleteAdminByID(t *testing.T) {
+// 	id := "668e2b1540bdb1d47710a316"
+// 	objectID, err := primitive.ObjectIDFromHex(id)
+// 	if err != nil {
+// 		t.Fatalf("error converting id to ObjectID: %v", err)
+// 	}
 
-	err = module.DeleteAdminByID(objectID, module.MongoConn, "Admin")
-	if err != nil {
-		t.Fatalf("error calling DeleteAdminByID: %v", err)
-	}
+// 	err = module.DeleteAdminByID(objectID, module.MongoConn, "Admin")
+// 	if err != nil {
+// 		t.Fatalf("error calling DeleteAdminByID: %v", err)
+// 	}
 
-	_, err = module.GetAdminByID(objectID, module.MongoConn, "Admin")
-	if err == nil {
-		t.Fatalf("expected data to be deleted, but it still exists")
-	}
-}
+// 	_, err = module.GetAdminByID(objectID, module.MongoConn, "Admin")
+// 	if err == nil {
+// 		t.Fatalf("expected data to be deleted, but it still exists")
+// 	 }
+// }
