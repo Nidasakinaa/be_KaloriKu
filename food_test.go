@@ -62,7 +62,7 @@ func TestDeleteMenuItemByID(t *testing.T) {
 //FUNCTION USER
 //GetUserByID retrieves a user from the database by its ID
 func TestGetUserByID(t *testing.T) {
-	_id := "678b9ffac895eeea0d5144b1"
+	_id := "678ba051c7522337e180b946"
 	objectID, err := primitive.ObjectIDFromHex(_id)
 	if err != nil {
 		t.Fatalf("error converting id to ObjectID: %v", err)

@@ -179,7 +179,7 @@ func InsertUser(db *mongo.Database, col string, name string, phone string, usern
 }
 
 //UpdateUser updates an existing user in the database
-func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string, username string, password float64, role string) (err error) {
+func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string, username string, password string, role string) (err error) {
 	filter := bson.M{"_id": _id}
 	update := bson.M{
 		"$set": bson.M{
