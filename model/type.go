@@ -14,38 +14,11 @@ type MenuItem struct {
 	Image       string             `bson:"image,omitempty" json:"image,omitempty"`
 }
 
-type Customer struct {
-	ID        	 primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-	Name      	 string             `bson:"name,omitempty" json:"name,omitempty"`
-	Phone     	 string             `bson:"phone,omitempty" json:"phone,omitempty"`
-	Username string             `bson:"username,omitempty" json:"username,omitempty"`
-	Password string             `bson:"password,omitempty" json:"password,omitempty"`
+type User struct {
+    ID       primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
+    FullName string             `bson:"name,omitempty" json:"name,omitempty"`
+    Phone    string             `bson:"phone,omitempty" json:"phone,omitempty"`
+    Username string             `bson:"username,omitempty" json:"username,omitempty"`
+    Password string             `bson:"password,omitempty" json:"password,omitempty"`
+    Role     string             `bson:"role,omitempty" json:"role,omitempty"` // "admin" or "customer"
 }
-
-type Admin struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-	Username string             `bson:"username,omitempty" json:"username,omitempty"`
-	Password string             `bson:"password,omitempty" json:"password,omitempty"`
-}
-
-// type Category struct {
-// 	ID   primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-// 	Name string             `bson:"name,omitempty" json:"name,omitempty"`
-// }
-
-// type Order struct {
-// 	ID              primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-// 	CustomerID      primitive.ObjectID `bson:"customer_id,omitempty" json:"customer_id,omitempty"`
-// 	OrderItems      []OrderItem        `bson:"order_item,omitempty" json:"order_item,omitempty"`
-// 	OrderDate       string             `bson:"order_date,omitempty" json:"order_date,omitempty"`
-// 	TotalAmount     float64            `bson:"total_amount,omitempty" json:"total_amount,omitempty"`
-// 	Status          string             `bson:"status,omitempty" json:"status,omitempty"` 
-// 	DeliveryDate    string             `bson:"delivery_date,omitempty" json:"delivery_date,omitempty"`
-// 	DeliveryAddress string            `bson:"delivery_address,omitempty" json:"delivery_address,omitempty"`
-// }
-
-// type OrderItem struct {
-// 	MenuItemID primitive.ObjectID `bson:"menu_item_id,omitempty" json:"menu_item_id,omitempty"`
-// 	Quantity   int                `bson:"quantity,omitempty" json:"quantity,omitempty"`
-// 	Price      float64            `bson:"price,omitempty" json:"price,omitempty"`
-// }

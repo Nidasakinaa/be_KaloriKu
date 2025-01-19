@@ -129,4 +129,90 @@ func DeleteMenuItemByID(_id primitive.ObjectID, db *mongo.Database, col string) 
 	return nil
 }
 
-//FUNCTION CUSTOMER
+//FUNCTION USER
+//GetUserByID retrieves a user from the database by its ID
+func GetUserByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.User, error) {
+	var user model.User
+	collection := db.Collection("User")
+	filter := bson.M{"_id": _id}
+	err := collection.FindOne(context.TODO(), filter).Decode(&user)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return user, fmt.Errorf("GetUserByID: user dengan ID %s tidak ditemukan", _id.Hex())
+		}
+		return user, fmt.Errorf("GetUserByID: gagal mendapatkan data user: %w", err)
+	}
+	return user, nil
+}
+
+//GetAllUser retrieves all users from the database
+func GetAllUser(db *mongo.Database, col string) (data []model.User) {
+	user := db.Collection(col)
+	filter := bson.M{}
+	cursor, err := user.Find(context.TODO(), filter)
+	if err != nil {
+		fmt.Println("GetAllUser :", err)
+	}
+	err = cursor.All(context.TODO(), &data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return
+}
+
+// InsertUser creates a new order in the database
+func InsertUser(db *mongo.Database, col string, name string, phone string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
+	user := bson.M{
+		"name":    	name,
+		"phone":  	phone,
+		"username": username,
+		"password": password,
+		"role":   	role,
+	}
+	result, err := db.Collection(col).InsertOne(context.Background(), user)
+	if err != nil {
+		fmt.Printf("InsertUser: %v\n", err)
+		return
+	}
+	insertedID = result.InsertedID.(primitive.ObjectID)
+	return insertedID, nil
+}
+
+//UpdateUser updates an existing user in the database
+func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string, username string, password float64, role string) (err error) {
+	filter := bson.M{"_id": _id}
+	update := bson.M{
+		"$set": bson.M{
+			"name":    	name,
+			"phone":  	phone,
+			"username": username,
+			"password": password,
+			"role":   	role,
+			},
+		}
+		result, err := db.Collection(col).UpdateOne(ctx, filter, update)
+		if err != nil {
+			return fmt.Errorf("UpdateMenuItem: gagal memperbarui Menu Item: %w", err)
+		}
+		if result.MatchedCount == 0 {
+			return errors.New("UpdateMenuItem: tidak ada data yang diubah dengan ID yang ditentukan")
+		}
+		return nil
+	}
+
+// DeleteUserByID deletes a menu item from the database by its ID
+func DeleteUserByID(_id primitive.ObjectID, db *mongo.Database, col string) error {
+	user := db.Collection(col)
+	filter := bson.M{"_id": _id}
+
+	result, err := user.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return fmt.Errorf("error deleting data for ID %s: %s", _id, err.Error())
+	}
+
+	if result.DeletedCount == 0 {
+		return fmt.Errorf("data with ID %s not found", _id)
+	}
+
+	return nil
+}
