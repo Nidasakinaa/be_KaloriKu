@@ -2,6 +2,7 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
 
 type MenuItem struct {
@@ -22,3 +23,11 @@ type User struct {
     Password string             `bson:"password,omitempty" json:"password,omitempty"`
     Role     string             `bson:"role,omitempty" json:"role,omitempty"` // "admin" or "customer"
 }
+
+type Token struct{
+	ID			string 				`bson:"_id,omitempty" json:"_id,omitempty"`
+	Token		string				`bson:"token" json:"token,omitempty"`
+	AdminID		string				`bson:"admin_id" json:"admin_id,omitempty"`
+	CreatedAt	time.Time			`bson:"created_at" json:"created_at"` 
+}
+

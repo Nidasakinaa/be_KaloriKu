@@ -84,7 +84,7 @@ func TestInsertUser(t *testing.T) {
     phone := "1234567890"
     username := "admin"
     password := "admin12345"
-    role := "customer"
+    role := "Admin"
     insertedID, err := module.InsertUser(module.MongoConn, "User", name, phone, username, password, role)
     if err != nil {
         t.Errorf("Error inserting data: %v", err)

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	model "github.com/Nidasakinaa/be_KaloriKu/model"
+	"github.com/Nidasakinaa/be_KaloriKu/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -145,6 +145,23 @@ func GetUserByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.
 	return user, nil
 }
 
+func GetRoleByAdmin(db *mongo.Database, collection string)([]model.User, error) {
+	var users []model.User
+	filter := bson.M{"role": "Admin"}
+	opts := options.Find().SetLimit(1)
+	
+	cursor, err := db.Collection(collection).Find(context.Background(), filter, opts)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	if err = cursor.All(context.Background(), &users); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 //GetAllUser retrieves all users from the database
 func GetAllUser(db *mongo.Database, col string) (data []model.User) {
 	user := db.Collection(col)
@@ -179,7 +196,7 @@ func InsertUser(db *mongo.Database, col string, name string, phone string, usern
 }
 
 //UpdateUser updates an existing user in the database
-func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string, username string, password string, role string) (err error) {
+func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string, username string, password float64, role string) (err error) {
 	filter := bson.M{"_id": _id}
 	update := bson.M{
 		"$set": bson.M{
