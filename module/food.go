@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Nidasakinaa/be_KaloriKu/model"
-
+	"time"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -171,6 +171,24 @@ func GetAllUser(db *mongo.Database, col string) (data []model.User) {
 	}
 	return
 }
+
+func SaveTokenToDatabase(db *mongo.Database, col string, adminID string, token string) error {
+    collection := db.Collection(col)
+    filter := bson.M{"admin_id": adminID}
+    update := bson.M{
+        "$set": bson.M{
+            "token":      token,
+            "updated_at": time.Now(),
+        },
+    }
+    _, err := collection.UpdateOne(context.Background(), filter, update, options.Update().SetUpsert(true))
+    if err != nil {
+        return err
+    }
+
+    return nil
+}
+
 
 // InsertUser creates a new order in the database
 func InsertUser(db *mongo.Database, col string, name string, phone string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
