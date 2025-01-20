@@ -157,22 +157,23 @@ func GetRoleByAdmin(db *mongo.Database, collection string, role string) (*model.
 	return &user, nil
 }
 
-func InsertUsers(db *mongo.Database, col string, fullname string,  phonenumber string, username string, password string,  role string) (insertedID primitive.ObjectID, err error) {
-	users := bson.M{
-		"fullname":    	fullname,
-		"phonenumber": 	phonenumber,
-		"username": 		username,
-		"password": 		password,
-		"role":   		role,
-	}
-	result, err := db.Collection(col).InsertOne(context.Background(), users)
-	if err != nil {
-		fmt.Printf("InsertAdmin: %v\n", err)
-		return
-	}
-	insertedID = result.InsertedID.(primitive.ObjectID)
-	return insertedID, nil
+func InsertUsers(db *mongo.Database, col string, fullname, phonenumber, username, password, role string) (insertedID primitive.ObjectID, err error) {
+    users := bson.M{
+        "fullname":    fullname,
+        "phonenumber": phonenumber,
+        "username":    username,
+        "password":    password,
+        "role":        role,
+    }
+    result, err := db.Collection(col).InsertOne(context.Background(), users)
+    if err != nil {
+        fmt.Printf("InsertUser: %v\n", err)
+        return
+    }
+    insertedID = result.InsertedID.(primitive.ObjectID)
+    return insertedID, nil
 }
+
 
 func DeleteTokenFromMongoDB(db *mongo.Database, col string, token string) error {
 	collection := db.Collection(col)
