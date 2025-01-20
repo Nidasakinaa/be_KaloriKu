@@ -145,16 +145,16 @@ func GetUserByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.
 	return user, nil
 }
 
-func GetRoleByAdmin(db *mongo.Database, collection string, role string) (model.User, error) {
+func GetRoleByAdmin(db *mongo.Database, collection string, role string) (*model.User, error) {
 	var user model.User
 	filter := bson.M{"role": role}
-	opts := options.FindOne() 
-	
+	opts := options.FindOne()
+
 	err := db.Collection(collection).FindOne(context.Background(), filter, opts).Decode(&user)
 	if err != nil {
-		return user, err
+		return nil, err 
 	}
-	return user, nil
+	return &user, nil
 }
 
 //GetAllUser retrieves all users from the database
