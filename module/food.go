@@ -174,17 +174,17 @@ func InsertUsers(db *mongo.Database, col string, fullname string,  phonenumber s
 	return insertedID, nil
 }
 
-	func DeleteTokenFromMongoDB(db *mongo.Database, col string, token string) error {
-		collection := db.Collection(col)
-		filter := bson.M{"token": token}
+func DeleteTokenFromMongoDB(db *mongo.Database, col string, token string) error {
+	collection := db.Collection(col)
+	filter := bson.M{"token": token}
 
-		_, err := collection.DeleteOne(context.Background(), filter)
-		if err != nil {
-			return err
-		}
-
-		return nil
+	_, err := collection.DeleteOne(context.Background(), filter)
+	if err != nil {
+		return err
 	}
+
+	return nil
+}
 
 
 //GetAllUser retrieves all users from the database
@@ -259,6 +259,8 @@ func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primiti
 		}
 		return nil
 	}
+
+	
 
 // DeleteUserByID deletes a menu item from the database by its ID
 func DeleteUserByID(_id primitive.ObjectID, db *mongo.Database, col string) error {
