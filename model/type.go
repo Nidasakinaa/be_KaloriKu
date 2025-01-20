@@ -15,19 +15,19 @@ type MenuItem struct {
 	Image       string             `bson:"image,omitempty" json:"image,omitempty"`
 }
 
-type User struct {
-    ID       primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-    FullName string             `bson:"fullname,omitempty" json:"fullname,omitempty"`
-    Phone    string             `bson:"phonenumber,omitempty" json:"phonenumber,omitempty"`
-    Username string             `bson:"username,omitempty" json:"username,omitempty"`
-    Password string             `bson:"password,omitempty" json:"password,omitempty"`
-    Role     string             `bson:"role,omitempty" json:"role,omitempty"` // "admin" or "customer"
-}
+	type User struct {
+		ID       primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
+		FullName string             `bson:"fullname,omitempty" json:"fullname,omitempty"`
+		Phone    string             `bson:"phonenumber,omitempty" json:"phonenumber,omitempty"`
+		Username string             `bson:"username,omitempty" json:"username,omitempty"`
+		Password string             `bson:"password,omitempty" json:"password,omitempty"`
+		Role     string             `bson:"role,omitempty" json:"role,omitempty"` // "admin" or "customer"
+	}
 
-type Token struct{
-	ID			string 				`bson:"_id,omitempty" json:"_id,omitempty"`
-	Token		string				`bson:"token" json:"token,omitempty"`
-	AdminID		string				`bson:"admin_id" json:"admin_id,omitempty"`
-	CreatedAt	time.Time			`bson:"created_at" json:"created_at"` 
-}
+	type Token struct{
+		ID			string 				`bson:"_id,omitempty" json:"_id,omitempty"`
+		Token		string				`bson:"token" json:"token,omitempty"`
+		AdminID		string				`bson:"admin_id" json:"admin_id,omitempty"`
+		CreatedAt	time.Time			`bson:"created_at" json:"created_at"` 
+	}
 
