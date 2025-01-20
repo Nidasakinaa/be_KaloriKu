@@ -8,14 +8,22 @@ import (
 	 "golang.org/x/crypto/bcrypt"
 )
 
-func GenerateJWT(admin model.User) (string, error) {
+func GenerateJWT(user model.User, role string) (string, error) {
 	claims := jwt.MapClaims{}
-	claims["admin_id"] = admin.ID.Hex()
+
+	
+	if role == "admin" {
+		claims["admin_id"] = user.ID.Hex()
+		claims["role"] = "admin"
+	} else if role == "customer" {
+		claims["customer_id"] = user.ID.Hex()
+	}
+
+
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	secretKey := os.Getenv("JWT_SECRET")	
+	secretKey := os.Getenv("JWT_SECRET")
 	return token.SignedString([]byte(secretKey))
 }
 
