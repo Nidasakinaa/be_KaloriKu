@@ -148,7 +148,7 @@ func GetUserByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.
 	func GetRoleByAdmin(db *mongo.Database, collection string, role string)([]model.User, error) {
 		var users []model.User
 		filter := bson.M{"role": role}
-		opts := options.Find().SetLimit(1)
+		opts := options.Find()
 		
 		cursor, err := db.Collection(collection).Find(context.Background(), filter, opts)
 		if err != nil {
