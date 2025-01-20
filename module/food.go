@@ -157,7 +157,7 @@ func GetRoleByAdmin(db *mongo.Database, collection string, role string) (*model.
 	return &user, nil
 }
 
-func InsertUsers(db *mongo.Database, col string, fullname, phonenumber, username, password, role string) (insertedID primitive.ObjectID, err error) {
+func InsertUsers(db *mongo.Database, col string, fullname string, phonenumber string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
     users := bson.M{
         "fullname":    fullname,
         "phonenumber": phonenumber,
@@ -172,6 +172,18 @@ func InsertUsers(db *mongo.Database, col string, fullname, phonenumber, username
     }
     insertedID = result.InsertedID.(primitive.ObjectID)
     return insertedID, nil
+}
+
+func GetByUsername(db *mongo.Database, col string, username string) (*model.User, error) {
+	var admin model.User
+    err := db.Collection(col).FindOne(context.Background(), bson.M{"username": username}).Decode(&admin)
+    if err == mongo.ErrNoDocuments {
+        return nil, nil 
+    }
+    if err != nil {
+        return nil, err
+    }
+    return &admin, nil
 }
 
 
