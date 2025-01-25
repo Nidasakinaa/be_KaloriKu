@@ -4,8 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/Nidasakinaa/be_KaloriKu/model"
+	"image"
+	"image/jpeg"
+	"image/png"
+	"net/http"
+	"os"
+	"path/filepath"
 	"time"
+
+	"github.com/Nidasakinaa/be_KaloriKu/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -40,19 +47,105 @@ func StaticAdminLogin(db *mongo.Database, col string, username, password string)
 }
 
 //FUNCTION MENU ITEM
-//GetMenuItemByID retrieves a menu item from the database by its ID
+// Helper function to download image from URL
+func downloadImage(url string) (image.Image, string, error) {
+    resp, err := http.Get(url)
+    if err != nil {
+        return nil, "", err
+    }
+    defer resp.Body.Close()
+
+    img, format, err := image.Decode(resp.Body)
+    if err != nil {
+        return nil, "", err
+    }
+
+    if format != "jpeg" && format != "png" {
+        return nil, "", errors.New("unsupported image format")
+    }
+
+    return img, format, nil
+}
+
+// Helper function to save image locally
+func saveImage(img image.Image, path string, format string) error {
+    // Create the directory if it doesn't exist
+    err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
+    if err != nil {
+        return err
+    }
+
+    file, err := os.Create(path)
+    if err != nil {
+        return err
+    }
+    defer file.Close()
+
+    switch format {
+    case "jpeg":
+        err = jpeg.Encode(file, img, nil)
+    case "png":
+        err = png.Encode(file, img)
+    default:
+        return errors.New("unsupported image format")
+    }
+
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+// Helper function to display image in terminal
+func displayImage(img image.Image) {
+    fmt.Println("Displaying image is not supported in this terminal.")
+}
+
+// Helper function to load image from local path
+func loadImage(path string) (image.Image, error) {
+    file, err := os.Open(path)
+    if err != nil {
+        return nil, err
+    }
+    defer file.Close()
+
+    img, _, err := image.Decode(file)
+    if err != nil {
+        return nil, err
+    }
+    return img, nil
+}
+
+// GetMenuItemByID retrieves a menu item from the database by its ID
 func GetMenuItemByID(_id primitive.ObjectID, db *mongo.Database, col string) (model.MenuItem, error) {
-	var menu model.MenuItem
-	collection := db.Collection("Menu")
-	filter := bson.M{"_id": _id}
-	err := collection.FindOne(context.TODO(), filter).Decode(&menu)
-	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			return menu, fmt.Errorf("GetMenuItemByID: menu item dengan ID %s tidak ditemukan", _id.Hex())
-		}
-		return menu, fmt.Errorf("GetMenuItemByID: gagal mendapatkan menu item: %w", err)
-	}
-	return menu, nil
+    var menu model.MenuItem
+    collection := db.Collection("Menu")
+    filter := bson.M{"_id": _id}
+    err := collection.FindOne(context.TODO(), filter).Decode(&menu)
+    if err != nil {
+        if errors.Is(err, mongo.ErrNoDocuments) {
+            return menu, fmt.Errorf("GetMenuItemByID: menu item dengan ID %s tidak ditemukan", _id.Hex())
+        }
+        return menu, fmt.Errorf("GetMenuItemByID: gagal mendapatkan menu item: %w", err)
+    }
+    return menu, nil
+}
+
+// GetMenuItemByIDAndDisplayImage retrieves a menu item by its ID and displays the image
+func GetMenuItemByIDAndDisplayImage(_id primitive.ObjectID, db *mongo.Database, col string) (model.MenuItem, error) {
+    menu, err := GetMenuItemByID(_id, db, col)
+    if err != nil {
+        return menu, err
+    }
+
+    // Load and display the image
+    img, err := loadImage(menu.Image)
+    if err != nil {
+        return menu, fmt.Errorf("error loading image: %v", err)
+    }
+    displayImage(img)
+
+    return menu, nil
 }
 
 //GetAllMenuItem retrieves all menu items from the database
@@ -70,23 +163,51 @@ func GetAllMenuItem(db *mongo.Database, col string) (data []model.MenuItem) {
 	return
 }
 
-// InsertMenuItem creates a new order in the database
-func InsertMenuItem(db *mongo.Database, col string, name string, ingredients string, description string, calories float64, category string, image string) (insertedID primitive.ObjectID, err error) {
-	menu := bson.M{
-		"name":    		name,
-		"ingredients":  ingredients,
-		"description":  description,
-		"calories":     calories,
-		"category":   	category,
-		"image":		image,
-	}
-	result, err := db.Collection(col).InsertOne(context.Background(), menu)
+// GetMenuByCategory retrieves all menu items from the database by its category
+func GetMenuItemByCategory(category string, db *mongo.Database, col string) (model.MenuItem, error) {
+	var menu model.MenuItem
+	collection := db.Collection("Menu")
+	filter := bson.M{"category": category}
+	err := collection.FindOne(context.TODO(), filter).Decode(&menu)
 	if err != nil {
-		fmt.Printf("InsertMenuItem: %v\n", err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return menu, fmt.Errorf("GetMenuItemByCategory: menu item dengan category %s tidak ditemukan", category)
+		}
+		return menu, fmt.Errorf("GetMenuItemByCategory: gagal mendapatkan menu item: %w", err)
 	}
-	insertedID = result.InsertedID.(primitive.ObjectID)
-	return insertedID, nil
+	return menu, nil
+}
+
+// InsertMenuItem creates a new menu item in the database
+func InsertMenuItem(db *mongo.Database, col string, name string, ingredients string, description string, calories float64, category string, imageURL string) (insertedID primitive.ObjectID, err error) {
+    // Download the image
+    img, format, err := downloadImage(imageURL)
+    if err != nil {
+        return primitive.NilObjectID, fmt.Errorf("error downloading image: %v", err)
+    }
+
+    // Save the image locally
+    imagePath := filepath.Join("images", fmt.Sprintf("%s.%s", primitive.NewObjectID().Hex(), format))
+    err = saveImage(img, imagePath, format)
+    if err != nil {
+        return primitive.NilObjectID, fmt.Errorf("error saving image: %v", err)
+    }
+
+    menu := bson.M{
+        "name":        name,
+        "ingredients": ingredients,
+        "description": description,
+        "calories":    calories,
+        "category":    category,
+        "image":       imagePath,
+    }
+    result, err := db.Collection(col).InsertOne(context.Background(), menu)
+    if err != nil {
+        fmt.Printf("InsertMenuItem: %v\n", err)
+        return
+    }
+    insertedID = result.InsertedID.(primitive.ObjectID)
+    return insertedID, nil
 }
 
 //UpdateMenuItem updates an existing menu item in the database

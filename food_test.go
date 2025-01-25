@@ -22,23 +22,46 @@ func TestGetMenuItemByID(t *testing.T) {
 	fmt.Println(menu)
 }
 
+func TestGetMenuItemByCategory(t *testing.T) {
+	category := "Salad"
+	menu, err := module.GetMenuItemByCategory(category, module.MongoConn, "Menu")
+	if err != nil {
+		t.Fatalf("error calling GetMenuItemByCategory: %v", err)
+	}
+	fmt.Println(menu)
+}
+
 func TestGetAllMenu(t *testing.T) {
 	data := module.GetAllMenuItem(module.MongoConn, "Menu")
 	fmt.Println(data)
 }
 
 func TestInsertMenuItem(t *testing.T) {
-	name := "Grilled Chicken with Quinoa"
-    ingredients := "Chicken Breast 200 gram, Quinoa 100 gram, Olive Oil, Spices"
-    description := "Grilled chicken breast served with quinoa and seasoned with olive oil and spices"
-    calories := 350.0
-    category := "Main Course"
-    image := "5678"
-    insertedID, err := module.InsertMenuItem(module.MongoConn, "Menu", name, ingredients, description, calories, category, image)
-    if err != nil {
-        t.Errorf("Error inserting data: %v", err)
-    }
-    fmt.Printf("Data berhasil disimpan dengan id %s", insertedID.Hex())
+     // Test data
+	 name := "Grilled Chicken with Quinoa"
+	 ingredients := "Chicken Breast 200 gram, Quinoa 100 gram, Olive Oil, Spices"
+	 description := "Grilled chicken breast served with quinoa and seasoned with olive oil and spices"
+	 calories := 350.0
+	 category := "High Protein"
+	 imageURL := "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq-eqd1MdChsAz5ThM2ltfaEoeLv4psphvxg&s" // Valid URL
+ 
+	 // Call the function
+	 insertedID, err := module.InsertMenuItem(module.MongoConn, "Menu", name, ingredients, description, calories, category, imageURL)
+	 if err != nil {
+		 t.Fatalf("Error inserting menu item: %v", err)
+	 }
+ 
+	 // Print the result
+	 fmt.Printf("Data berhasil disimpan dengan id %s\n", insertedID.Hex())
+ 
+	 // Verify the inserted data and display the image
+	 menuItem, err := module.GetMenuItemByIDAndDisplayImage(insertedID, module.MongoConn, "Menu")
+	 if err != nil {
+		 t.Fatalf("Error retrieving menu item: %v", err)
+	 }
+	 if menuItem.Image == "" {
+		 t.Errorf("Expected image path to be set, but got empty string")
+	 }
 }
 
 func TestDeleteMenuItemByID(t *testing.T) {
