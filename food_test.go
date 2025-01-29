@@ -10,7 +10,7 @@ import (
 
 //FUNCTION MENU ITEM
 func TestGetMenuItemByID(t *testing.T) {
-	_id := "678a72468c7c04668e9b40e5"
+	_id := "6799d453b5803150f0a440e9"
 	objectID, err := primitive.ObjectIDFromHex(_id)
 	if err != nil {
 		t.Fatalf("error converting id to ObjectID: %v", err)
@@ -23,7 +23,7 @@ func TestGetMenuItemByID(t *testing.T) {
 }
 
 func TestGetMenuItemByCategory(t *testing.T) {
-	category := "Salad"
+	category := "Beverage"
 	menu, err := module.GetMenuItemByCategory(category, module.MongoConn, "Menu")
 	if err != nil {
 		t.Fatalf("error calling GetMenuItemByCategory: %v", err)
@@ -37,13 +37,13 @@ func TestGetAllMenu(t *testing.T) {
 }
 
 func TestInsertMenuItem(t *testing.T) {
-     // Test data
-	 name := "Grilled Chicken with Quinoa"
-	 ingredients := "Chicken Breast 200 gram, Quinoa 100 gram, Olive Oil, Spices"
-	 description := "Grilled chicken breast served with quinoa and seasoned with olive oil and spices"
-	 calories := 350.0
-	 category := "High Protein"
-	 imageURL := "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq-eqd1MdChsAz5ThM2ltfaEoeLv4psphvxg&s" // Valid URL
+    // Test data
+	name := "Fruit Smoothie"
+    ingredients := "Banana, Strawberry, Blueberry, Almond Milk, Honey"
+    description := "A refreshing smoothie made with a blend of fruits and almond milk"
+    calories := 200.0
+    category := "Beverage"
+    imageURL := "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmTMSDdEMe7hCs2T1KBVj_1NKwYGb1lYqbKQ&s" // Valid URL
  
 	 // Call the function
 	 insertedID, err := module.InsertMenuItem(module.MongoConn, "Menu", name, ingredients, description, calories, category, imageURL)
