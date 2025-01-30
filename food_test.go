@@ -23,7 +23,7 @@ func TestGetMenuItemByID(t *testing.T) {
 }
 
 func TestGetMenuItemByCategory(t *testing.T) {
-	category := "Beverage"
+	category := "Diet"
 	menu, err := module.GetMenuItemByCategory(category, module.MongoConn, "Menu")
 	if err != nil {
 		t.Fatalf("error calling GetMenuItemByCategory: %v", err)
@@ -116,7 +116,7 @@ func TestInsertUser(t *testing.T) {
 }
 
 func TestDeleteUserByID(t *testing.T) {
-    id := "678b9ffac895eeea0d5144b1a"
+    id := "678f1406a3170576099b5435"
     objectID, err := primitive.ObjectIDFromHex(id)
     if err != nil {
         t.Fatalf("error converting id to ObjectID: %v", err)

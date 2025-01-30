@@ -293,7 +293,7 @@ func GetRoleByAdmin(db *mongo.Database, collection string, role string) (*model.
 func InsertUsers(db *mongo.Database, col string, fullname string, phonenumber string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
 	users := bson.M{
 		"fullname":    fullname,
-		"phonenumber": phonenumber,
+		"phone": phonenumber,
 		"username":    username,
 		"password":    password,
 		"role":        role,
