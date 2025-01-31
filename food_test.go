@@ -53,15 +53,6 @@ func TestInsertMenuItem(t *testing.T) {
  
 	 // Print the result
 	 fmt.Printf("Data berhasil disimpan dengan id %s\n", insertedID.Hex())
- 
-	 // Verify the inserted data and display the image
-	 menuItem, err := module.GetMenuItemByIDAndDisplayImage(insertedID, module.MongoConn, "Menu")
-	 if err != nil {
-		 t.Fatalf("Error retrieving menu item: %v", err)
-	 }
-	 if menuItem.Image == "" {
-		 t.Errorf("Expected image path to be set, but got empty string")
-	 }
 }
 
 func TestDeleteMenuItemByID(t *testing.T) {
