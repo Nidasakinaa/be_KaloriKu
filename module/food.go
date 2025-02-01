@@ -383,10 +383,10 @@ func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primiti
 	}
 	result, err := db.Collection(col).UpdateOne(ctx, filter, update)
 	if err != nil {
-		return fmt.Errorf("UpdateMenuItem: gagal memperbarui Menu Item: %w", err)
+		return fmt.Errorf("UpdateUser: gagal memperbarui User: %w", err)
 	}
 	if result.MatchedCount == 0 {
-		return errors.New("UpdateMenuItem: tidak ada data yang diubah dengan ID yang ditentukan")
+		return errors.New("UpdateUser: tidak ada data yang diubah dengan ID yang ditentukan")
 	}
 	return nil
 }
