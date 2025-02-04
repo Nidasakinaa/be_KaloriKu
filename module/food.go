@@ -226,6 +226,7 @@ func DeleteTokenFromMongoDB(db *mongo.Database, col string, token string) error 
 	return nil
 }
 
+
 // GetAllUser retrieves all users from the database
 func GetAllUser(db *mongo.Database, col string) ([]model.User, error) {
     var data []model.User
@@ -265,9 +266,9 @@ func SaveTokenToDatabase(db *mongo.Database, col string, adminID string, token s
 }
 
 // InsertUser creates a new order in the database
-func InsertUser(db *mongo.Database, col string, fullname string, phone string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
+func InsertUser(db *mongo.Database, col string, name string, phone string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
 	user := bson.M{
-		"name":     fullname,
+		"name":     name,
 		"phone":    phone,
 		"username": username,
 		"password": password,
@@ -283,11 +284,11 @@ func InsertUser(db *mongo.Database, col string, fullname string, phone string, u
 }
 
 // UpdateUser updates an existing user in the database
-func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, fullname string, phone string, username string, password string, role string) (err error) {
+func UpdateUser(ctx context.Context, db *mongo.Database, col string, _id primitive.ObjectID, name string, phone string, username string, password string, role string) (err error) {
 	filter := bson.M{"_id": _id}
 	update := bson.M{
 		"$set": bson.M{
-			"name":     fullname,
+			"name":     name,
 			"phone":    phone,
 			"username": username,
 			"password": password,

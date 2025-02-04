@@ -76,7 +76,7 @@ func TestDeleteMenuItemByID(t *testing.T) {
 //FUNCTION USER
 //GetUserByID retrieves a user from the database by its ID
 func TestGetUserByID(t *testing.T) {
-	_id := "678ba051c7522337e180b946"
+	_id := "67a23885d8d58983179fe315"
 	objectID, err := primitive.ObjectIDFromHex(_id)
 	if err != nil {
 		t.Fatalf("error converting id to ObjectID: %v", err)
@@ -97,11 +97,11 @@ func TestGetAllUsers(t *testing.T) {
 }	
 
 func TestInsertUser(t *testing.T) {
-	name := "Admin"
-    phone := "1234567890"
-    username := "admin"
-    password := "admin12345"
-    role := "customer"
+	name := "Nida Sakina"
+    phone := "083174603834"
+    username := "nida"
+    password := "Nida150304"
+    role := "admin"
     insertedID, err := module.InsertUser(module.MongoConn, "User", name, phone, username, password, role)
     if err != nil {
         t.Errorf("Error inserting data: %v", err)
@@ -110,7 +110,7 @@ func TestInsertUser(t *testing.T) {
 }
 
 func TestDeleteUserByID(t *testing.T) {
-    id := "678f1406a3170576099b5435"
+    id := "67a23885d8d58983179fe315"
     objectID, err := primitive.ObjectIDFromHex(id)
     if err != nil {
         t.Fatalf("error converting id to ObjectID: %v", err)
