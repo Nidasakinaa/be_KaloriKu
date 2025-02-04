@@ -17,7 +17,7 @@ type MenuItem struct {
 
 type User struct {
     ID       primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-    FullName string             `bson:"fullname,omitempty" json:"fullname,omitempty"`
+    FullName string             `bson:"name,omitempty" json:"name,omitempty"`
     Phone    string             `bson:"phone,omitempty" json:"phone,omitempty"`
     Username string             `bson:"username,omitempty" json:"username,omitempty"`
     Password string             `bson:"password,omitempty" json:"password,omitempty"`
