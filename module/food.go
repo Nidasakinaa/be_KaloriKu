@@ -187,11 +187,11 @@ func GetRoleByAdmin(db *mongo.Database, collection string, role string) (*model.
 
 func InsertUsers(db *mongo.Database, col string, fullname string, phonenumber string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
 	users := bson.M{
-		"fullname":    fullname,
-		"phone": 	   phonenumber,
-		"username":    username,
-		"password":    password,
-		"role":        role,
+		"fullname": fullname,
+		"phone":    phonenumber,
+		"username": username,
+		"password": password,
+		"role":     role,
 	}
 	result, err := db.Collection(col).InsertOne(context.Background(), users)
 	if err != nil {
@@ -227,19 +227,25 @@ func DeleteTokenFromMongoDB(db *mongo.Database, col string, token string) error 
 }
 
 // GetAllUser retrieves all users from the database
-func GetAllUser(db *mongo.Database, col string) (data []model.User) {
-	user := db.Collection(col)
-	filter := bson.M{}
-	cursor, err := user.Find(context.TODO(), filter)
-	if err != nil {
-		fmt.Println("GetAllUser :", err)
-	}
-	err = cursor.All(context.TODO(), &data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return
+func GetAllUser(db *mongo.Database, col string) ([]model.User, error) {
+    var data []model.User
+    user := db.Collection(col)
+
+    cursor, err := user.Find(context.TODO(), bson.M{})
+    if err != nil {
+        fmt.Println("GetAllUser error:", err)
+        return nil, err
+    }
+    defer cursor.Close(context.TODO()) // Selalu tutup cursor
+
+    if err := cursor.All(context.TODO(), &data); err != nil {
+        fmt.Println("Error decoding users:", err)
+        return nil, err
+    }
+
+    return data, nil
 }
+
 
 func SaveTokenToDatabase(db *mongo.Database, col string, adminID string, token string) error {
 	collection := db.Collection(col)

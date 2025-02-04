@@ -89,16 +89,19 @@ func TestGetUserByID(t *testing.T) {
 }
 
 func TestGetAllUsers(t *testing.T) {
-	data := module.GetAllUser(module.MongoConn, "User")
+	data, err := module.GetAllUser(module.MongoConn, "User")
+	if err != nil {
+		t.Fatalf("error calling GetAllUsers: %v", err)
+	}
 	fmt.Println(data)
-}
+}	
 
 func TestInsertUser(t *testing.T) {
 	name := "Admin"
     phone := "1234567890"
     username := "admin"
     password := "admin12345"
-    role := "Admin"
+    role := "customer"
     insertedID, err := module.InsertUser(module.MongoConn, "User", name, phone, username, password, role)
     if err != nil {
         t.Errorf("Error inserting data: %v", err)
