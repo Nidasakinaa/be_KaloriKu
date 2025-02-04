@@ -226,27 +226,25 @@ func DeleteTokenFromMongoDB(db *mongo.Database, col string, token string) error 
 	return nil
 }
 
-
 // GetAllUser retrieves all users from the database
 func GetAllUser(db *mongo.Database, col string) ([]model.User, error) {
-    var data []model.User
-    user := db.Collection(col)
+	var data []model.User
+	user := db.Collection(col)
 
-    cursor, err := user.Find(context.TODO(), bson.M{})
-    if err != nil {
-        fmt.Println("GetAllUser error:", err)
-        return nil, err
-    }
-    defer cursor.Close(context.TODO()) // Selalu tutup cursor
+	cursor, err := user.Find(context.TODO(), bson.M{})
+	if err != nil {
+		fmt.Println("GetAllUser error:", err)
+		return nil, err
+	}
+	defer cursor.Close(context.TODO()) // Selalu tutup cursor
 
-    if err := cursor.All(context.TODO(), &data); err != nil {
-        fmt.Println("Error decoding users:", err)
-        return nil, err
-    }
+	if err := cursor.All(context.TODO(), &data); err != nil {
+		fmt.Println("Error decoding users:", err)
+		return nil, err
+	}
 
-    return data, nil
+	return data, nil
 }
-
 
 func SaveTokenToDatabase(db *mongo.Database, col string, adminID string, token string) error {
 	collection := db.Collection(col)
