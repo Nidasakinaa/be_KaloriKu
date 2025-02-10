@@ -271,7 +271,7 @@ func InsertUser(db *mongo.Database, col string, name string, phone string, usern
 		"username":                username,
 		"password":                password,
 		"role":                    role,
-		"personalized_categories": []string{},
+		"personalized_categories": pesonalized,
 	}
 	result, err := db.Collection(col).InsertOne(context.Background(), user)
 	if err != nil {
