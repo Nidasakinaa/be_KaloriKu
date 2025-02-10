@@ -264,7 +264,7 @@ func SaveTokenToDatabase(db *mongo.Database, col string, adminID string, token s
 }
 
 // InsertUser creates a new order in the database
-func InsertUser(db *mongo.Database, col string, name string, phone string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
+func InsertUser(db *mongo.Database, col string, name string, phone string, username string, password string, role string, pesonalized []string) (insertedID primitive.ObjectID, err error) {
 	user := bson.M{
 		"name":                    name,
 		"phone":                   phone,
