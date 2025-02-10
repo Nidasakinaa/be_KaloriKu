@@ -266,11 +266,12 @@ func SaveTokenToDatabase(db *mongo.Database, col string, adminID string, token s
 // InsertUser creates a new order in the database
 func InsertUser(db *mongo.Database, col string, name string, phone string, username string, password string, role string) (insertedID primitive.ObjectID, err error) {
 	user := bson.M{
-		"name":     name,
-		"phone":    phone,
-		"username": username,
-		"password": password,
-		"role":     role,
+		"name":                    name,
+		"phone":                   phone,
+		"username":                username,
+		"password":                password,
+		"role":                    role,
+		"personalized_categories": []string{},
 	}
 	result, err := db.Collection(col).InsertOne(context.Background(), user)
 	if err != nil {
